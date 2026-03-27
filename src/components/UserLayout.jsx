@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import { useAuth } from "../context/AuthContext";
 import { tmdb } from "../utils/api";
-import { Drawer, Button, Dropdown, Avatar } from "antd";
+import { Drawer, Button, Dropdown, Avatar, Input, Spin } from "antd";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
@@ -129,13 +129,15 @@ export default function UserLayout() {
                     onClick={closeSearch}
                   />
                 }
-                placeholder="Search movies, series..."
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input-responsive"
                 style={{
-                  width: 280,
                   background: "#1a1a1a",
                   border: "1px solid #333",
+                  color: "#fff",
+                  height: 38,
                 }}
               />
               {/* Dropdown results */}
@@ -295,7 +297,7 @@ export default function UserLayout() {
         }}
         width={280}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {navLinks.map((l) => (
             <div
               key={l.path}
@@ -308,11 +310,33 @@ export default function UserLayout() {
                 fontSize: "1.1rem",
                 fontWeight: 600,
                 cursor: "pointer",
+                padding: "10px 0",
               }}
             >
               {l.label}
             </div>
           ))}
+          <div
+            onClick={() => {
+              setMobileMenuOpen(false);
+              setSearchOpen(true);
+              setTimeout(() => searchRef.current?.focus(), 100);
+            }}
+            style={{
+              color: "#aaa",
+              fontSize: "1.1rem",
+              fontWeight: 600,
+              cursor: "pointer",
+              padding: "10px 0",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              borderTop: "1px solid #1a1a1a",
+              marginTop: 10,
+            }}
+          >
+            <SearchOutlined /> Search
+          </div>
         </div>
       </Drawer>
 
