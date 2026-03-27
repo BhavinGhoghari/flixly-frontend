@@ -322,16 +322,16 @@ export default function MovieDetailPage() {
             </div>
 
             {/* Rating */}
-            {movie.rating > 0 && (
-              <div
-                className="detail-info-rating"
-                style={{
-                  display: "flex",
-                  gap: 12,
-                  marginBottom: 18,
-                  flexWrap: "wrap",
-                }}
-              >
+            <div
+              className="detail-info-rating"
+              style={{
+                display: "flex",
+                gap: 12,
+                marginBottom: 18,
+                flexWrap: "wrap",
+              }}
+            >
+              {movie.rating > 0 && (
                 <div
                   style={{
                     background: "#1a1a1a",
@@ -369,8 +369,49 @@ export default function MovieDetailPage() {
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+
+              {movie.totalReviews > 0 && (
+                <div
+                  style={{
+                    background: "linear-gradient(135deg, #1a0a0a, #1a1a1a)",
+                    border: "1px solid #441111",
+                    borderRadius: 10,
+                    padding: "10px 16px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <StarFilled style={{ color: "#e50914", fontSize: 20 }} />
+                  <div>
+                    <div
+                      style={{
+                        fontFamily: "'Bebas Neue',sans-serif",
+                        fontSize: "1.5rem",
+                        color: "#fff",
+                        lineHeight: 1,
+                      }}
+                    >
+                      {movie.averageUserRating}
+                      <span style={{ color: "#555", fontSize: "0.8rem" }}>
+                        /10
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        color: "#e50914",
+                        fontSize: "0.68rem",
+                        letterSpacing: 1,
+                        fontWeight: 700
+                      }}
+                    >
+                      COMMUNITY · {movie.totalReviews} reviews
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Action buttons */}
             <div className="detail-info-actions" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
