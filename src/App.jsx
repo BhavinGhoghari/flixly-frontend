@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ConfigProvider, theme } from "antd";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 // User pages
 const LoginPage = lazy(() => import("./pages/LoginPage"));
@@ -114,6 +115,7 @@ export default function App() {
       <AuthProvider>
         <BrowserRouter>
           <AppRoutes />
+          <SpeedInsights />
         </BrowserRouter>
       </AuthProvider>
     </ConfigProvider>

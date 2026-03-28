@@ -4,14 +4,15 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
+    "@vercel/speed-insights": "^2.0.0",
     "antd": "^5.12.8",
     "axios": "^1.6.2",
+    "dayjs": "^1.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.0",
-    "react-scripts": "5.0.1",
     "react-player": "^2.13.0",
-    "dayjs": "^1.11.10"
+    "react-router-dom": "^6.21.0",
+    "react-scripts": "5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
