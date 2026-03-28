@@ -25,6 +25,7 @@ body {
   color: var(--text);
   font-family: "Montserrat", sans-serif;
   min-height: 100vh;
+  text-rendering: optimizeLegibility;
 }
 
 /* Loader */
@@ -316,6 +317,8 @@ body {
   align-items: center;
   padding: 0 60px;
   overflow: hidden;
+  background: #000;
+  contain: layout;
 }
 .hero-bg {
   position: absolute;

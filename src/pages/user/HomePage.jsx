@@ -38,16 +38,23 @@ export default function HomePage() {
   const [loadingSections, setLoadingSections] = useState(true);
 
   useEffect(() => {
+    // Priority 1: Above-the-fold content
     fetchInitial();
-    fetchOthers();
+    
+    // Priority 2: Non-essential sections (delay slightly to let browser prioritize initial render)
+    const t = setTimeout(fetchOthers, 800);
+    return () => clearTimeout(t);
   }, []);
 
   const fetchInitial = async () => {
     try {
+      setLoadingHero(true);
       const trendRes = await tmdb.getTrending("week");
       const tr = trendRes.data.results || [];
       setTrending(tr);
-      setFeatured(tr[0] || null);
+      // Pick a featured item that has a backdrop
+      const withBackdrop = tr.find(item => item.backdropUrl) || tr[0];
+      setFeatured(withBackdrop || null);
     } catch (err) {
       console.error(err);
     } finally {
@@ -57,10 +64,22 @@ export default function HomePage() {
 
   const fetchOthers = async () => {
     try {
+      // Fetch in smaller chunks or use Promise.all for the rest
       const [
         popRes,
         upRes,
         popSerRes,
+      ] = await Promise.all([
+        tmdb.getPopularMovies(),
+        tmdb.getUpcoming(),
+        tmdb.getPopularSeries(),
+      ]);
+      setPopular(popRes.data.results || []);
+      setUpcoming(upRes.data.results || []);
+      setPopularSeries(popSerRes.data.results || []);
+
+      // Batch the remaining genres to avoid overwhelming the connection
+      const [
         actionRes,
         comedyRes,
         horrorRes,
@@ -68,9 +87,6 @@ export default function HomePage() {
         scifiRes,
         docRes,
       ] = await Promise.all([
-        tmdb.getPopularMovies(),
-        tmdb.getUpcoming(),
-        tmdb.getPopularSeries(),
         tmdb.getMoviesByGenre(28),
         tmdb.getMoviesByGenre(35),
         tmdb.getMoviesByGenre(27),
@@ -78,9 +94,6 @@ export default function HomePage() {
         tmdb.getMoviesByGenre(878),
         tmdb.getMoviesByGenre(99),
       ]);
-      setPopular(popRes.data.results || []);
-      setUpcoming(upRes.data.results || []);
-      setPopularSeries(popSerRes.data.results || []);
       setActionMovies(actionRes.data.results || []);
       setComedyMovies(comedyRes.data.results || []);
       setHorrorMovies(horrorRes.data.results || []);

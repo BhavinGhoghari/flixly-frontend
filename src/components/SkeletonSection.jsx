@@ -3,13 +3,10 @@ import { Skeleton } from "antd";
 
 const SkeletonCard = () => (
   <div
-    className="movie-card skeleton"
-    style={{ background: "#1a1a1a", borderRadius: 8, overflow: "hidden" }}
+    className="movie-card"
+    style={{ background: "#1a1a1a" }}
   >
-    <Skeleton.Button active style={{ width: "100%", height: 280 }} />
-    <div style={{ padding: 12 }}>
-      <Skeleton active paragraph={{ rows: 1 }} title={{ width: "60%" }} />
-    </div>
+    <Skeleton.Button active style={{ width: "100%", height: "100%" }} />
   </div>
 );
 
