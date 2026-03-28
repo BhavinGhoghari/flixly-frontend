@@ -19,6 +19,11 @@ import {
 import { tmdb } from "../../utils/api";
 import TrailerModal from "../../components/TrailerModal";
 import ReviewSection from "../../components/ReviewSection";
+import DetailSection from "../../components/DetailSection";
+import DetailInfoGroup from "../../components/DetailInfoGroup";
+import DetailInfoRow from "../../components/DetailInfoRow";
+import CastCard from "../../components/CastCard";
+import ProviderChip from "../../components/ProviderChip";
 
 const GENRE_COLORS = {
   Action: "red",
@@ -185,7 +190,10 @@ export default function MovieDetailPage() {
       </div>
 
       {/* ── MAIN ROW: poster + info ── */}
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 28px" }} className="detail-container">
+      <div
+        style={{ maxWidth: 1280, margin: "0 auto", padding: "0 28px" }}
+        className="detail-container"
+      >
         <div
           className="detail-main-row"
           style={{
@@ -403,7 +411,7 @@ export default function MovieDetailPage() {
                         color: "#e50914",
                         fontSize: "0.68rem",
                         letterSpacing: 1,
-                        fontWeight: 700
+                        fontWeight: 700,
                       }}
                     >
                       COMMUNITY · {movie.totalReviews} reviews
@@ -414,7 +422,10 @@ export default function MovieDetailPage() {
             </div>
 
             {/* Action buttons */}
-            <div className="detail-info-actions" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <div
+              className="detail-info-actions"
+              style={{ display: "flex", gap: 10, flexWrap: "wrap" }}
+            >
               {movie.trailerUrl && (
                 <Button
                   type="primary"
@@ -450,7 +461,7 @@ export default function MovieDetailPage() {
           {/* LEFT COLUMN */}
           <div style={{ minWidth: 0 }}>
             {/* Synopsis */}
-            <Section title="Synopsis">
+            <DetailSection title="Synopsis">
               <p
                 style={{
                   color: "#ccc",
@@ -461,11 +472,11 @@ export default function MovieDetailPage() {
               >
                 {movie.description || "No description available."}
               </p>
-            </Section>
+            </DetailSection>
 
             {/* Cast strip */}
             {movie.cast?.length > 0 && (
-              <Section
+              <DetailSection
                 title="Cast"
                 action={
                   <Button
@@ -535,12 +546,12 @@ export default function MovieDetailPage() {
                     </div>
                   )}
                 </div>
-              </Section>
+              </DetailSection>
             )}
 
             {/* Keywords */}
             {movie.keywords?.length > 0 && (
-              <Section title="Keywords">
+              <DetailSection title="Keywords">
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
                   {movie.keywords.slice(0, 20).map((k) => (
                     <Tag
@@ -557,12 +568,12 @@ export default function MovieDetailPage() {
                     </Tag>
                   ))}
                 </div>
-              </Section>
+              </DetailSection>
             )}
 
             {/* Watch Providers */}
             {hasProviders && (
-              <Section
+              <DetailSection
                 title={
                   <>
                     <DesktopOutlined style={{ marginRight: 8 }} />
@@ -630,13 +641,13 @@ export default function MovieDetailPage() {
                     </div>
                   </div>
                 )}
-              </Section>
+              </DetailSection>
             )}
 
             <Divider style={{ borderColor: "#1f1f1f", margin: "32px 0" }} />
 
             {/* Reviews */}
-            <Section
+            <DetailSection
               title={
                 <>
                   <TrophyOutlined style={{ marginRight: 8 }} />
@@ -645,7 +656,7 @@ export default function MovieDetailPage() {
               }
             >
               <ReviewSection movieId={`tmdb_${type}_${id}`} />
-            </Section>
+            </DetailSection>
           </div>
 
           {/* RIGHT SIDEBAR — full details panel */}
@@ -681,61 +692,61 @@ export default function MovieDetailPage() {
 
               <div style={{ padding: "0" }}>
                 {/* Grouped detail rows */}
-                <DetailGroup>
-                  <DetailRow
+                <DetailInfoGroup>
+                  <DetailInfoRow
                     icon={<CalendarOutlined />}
                     label="Release Year"
                     value={movie.releaseYear}
                   />
                   {movie.releaseDate && (
-                    <DetailRow
+                    <DetailInfoRow
                       icon={<CalendarOutlined />}
                       label="Release Date"
                       value={movie.releaseDate}
                     />
                   )}
                   {movie.type === "series" && movie.lastAirDate && (
-                    <DetailRow
+                    <DetailInfoRow
                       icon={<CalendarOutlined />}
                       label="Last Aired"
                       value={movie.lastAirDate}
                     />
                   )}
-                </DetailGroup>
+                </DetailInfoGroup>
 
-                <DetailGroup>
+                <DetailInfoGroup>
                   {movie.duration && (
-                    <DetailRow
+                    <DetailInfoRow
                       icon={<ClockCircleOutlined />}
                       label="Duration"
                       value={movie.duration}
                     />
                   )}
                   {movie.episodeRuntime && (
-                    <DetailRow
+                    <DetailInfoRow
                       icon={<ClockCircleOutlined />}
                       label="Episode Length"
                       value={movie.episodeRuntime}
                     />
                   )}
                   {movie.type === "series" && movie.totalSeasons && (
-                    <DetailRow
+                    <DetailInfoRow
                       icon={null}
                       label="Seasons"
                       value={`${movie.totalSeasons} Season${movie.totalSeasons > 1 ? "s" : ""}`}
                     />
                   )}
                   {movie.type === "series" && movie.totalEpisodes && (
-                    <DetailRow
+                    <DetailInfoRow
                       icon={null}
                       label="Episodes"
                       value={movie.totalEpisodes}
                     />
                   )}
-                </DetailGroup>
+                </DetailInfoGroup>
 
-                <DetailGroup>
-                  <DetailRow
+                <DetailInfoGroup>
+                  <DetailInfoRow
                     icon={<span style={{ fontSize: "0.8rem" }}>🎬</span>}
                     label="Director"
                     value={movie.director}
@@ -746,69 +757,69 @@ export default function MovieDetailPage() {
                     }
                   />
                   {movie.createdBy?.length > 0 && (
-                    <DetailRow
+                    <DetailInfoRow
                       icon={null}
                       label="Created By"
                       value={movie.createdBy.map((c) => c.name).join(", ")}
                     />
                   )}
                   {movie.writers?.length > 0 && (
-                    <DetailRow
+                    <DetailInfoRow
                       icon={null}
                       label="Writers"
                       value={movie.writers.map((w) => w.name).join(", ")}
                     />
                   )}
-                </DetailGroup>
+                </DetailInfoGroup>
 
-                <DetailGroup>
-                  <DetailRow
+                <DetailInfoGroup>
+                  <DetailInfoRow
                     icon={<GlobalOutlined />}
                     label="Original Language"
                     value={movie.language}
                   />
                   {movie.country && (
-                    <DetailRow
+                    <DetailInfoRow
                       icon={null}
                       label="Country"
                       value={movie.country}
                     />
                   )}
                   {movie.spokenLanguages?.length > 0 && (
-                    <DetailRow
+                    <DetailInfoRow
                       icon={<TranslationOutlined />}
                       label="Dubbed / Audio"
                       value={movie.spokenLanguages.slice(0, 5).join(", ")}
                     />
                   )}
-                </DetailGroup>
+                </DetailInfoGroup>
 
-                <DetailGroup>
-                  <DetailRow
+                <DetailInfoGroup>
+                  <DetailInfoRow
                     icon={null}
                     label="Age Rating"
                     value={movie.ageRating}
                     pill
                   />
                   {movie.type === "series" && movie.airStatus && (
-                    <DetailRow
+                    <DetailInfoRow
                       icon={null}
                       label="Air Status"
                       value={movie.airStatus}
                     />
                   )}
                   {movie.status && movie.type === "movie" && (
-                    <DetailRow
+                    <DetailInfoRow
                       icon={null}
                       label="Status"
                       value={movie.status}
                     />
                   )}
-                </DetailGroup>
+                </DetailInfoGroup>
 
                 {/* Networks (series) */}
                 {movie.networks?.length > 0 && (
-                  <DetailGroup>
+                  <DetailInfoGroup>
                     <div style={{ padding: "12px 16px" }}>
                       <div
                         style={{
@@ -867,12 +878,12 @@ export default function MovieDetailPage() {
                         ))}
                       </div>
                     </div>
-                  </DetailGroup>
+                  </DetailInfoGroup>
                 )}
 
                 {/* Production companies */}
                 {movie.productionCompanies?.length > 0 && (
-                  <DetailGroup>
+                  <DetailInfoGroup>
                     <div style={{ padding: "12px 16px" }}>
                       <div
                         style={{
@@ -925,27 +936,27 @@ export default function MovieDetailPage() {
                         ))}
                       </div>
                     </div>
-                  </DetailGroup>
+                  </DetailInfoGroup>
                 )}
 
                 {/* Budget / Revenue */}
                 {(movie.budget > 0 || movie.revenue > 0) && (
-                  <DetailGroup>
+                  <DetailInfoGroup>
                     {movie.budget > 0 && (
-                      <DetailRow
+                      <DetailInfoRow
                         icon={<DollarOutlined />}
                         label="Budget"
                         value={fmtMoney(movie.budget)}
                       />
                     )}
                     {movie.revenue > 0 && (
-                      <DetailRow
+                      <DetailInfoRow
                         icon={<DollarOutlined />}
                         label="Revenue"
                         value={fmtMoney(movie.revenue)}
                       />
                     )}
-                  </DetailGroup>
+                  </DetailInfoGroup>
                 )}
 
                 {/* IMDB link */}
@@ -1013,214 +1024,3 @@ export default function MovieDetailPage() {
   );
 }
 
-// ── Sub-components ──────────────────────────────────────────────────────────────
-
-function Section({ title, children, action }) {
-  return (
-    <div style={{ marginBottom: 36 }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 16,
-        }}
-      >
-        <div
-          className="section-title"
-          style={{ marginBottom: 0, fontSize: "1.1rem" }}
-        >
-          {title}
-        </div>
-        {action}
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function DetailGroup({ children }) {
-  return <div style={{ borderBottom: "1px solid #1a1a1a" }}>{children}</div>;
-}
-
-function DetailRow({ icon, label, value, link, pill }) {
-  if (!value) return null;
-  return (
-    <div
-      style={{
-        display: "flex",
-        gap: 10,
-        padding: "10px 16px",
-        alignItems: "flex-start",
-      }}
-    >
-      {icon && (
-        <span
-          style={{
-            color: "#e50914",
-            fontSize: "0.8rem",
-            marginTop: 2,
-            flexShrink: 0,
-            width: 14,
-          }}
-        >
-          {icon}
-        </span>
-      )}
-      <div style={{ flex: 1, minWidth: 0, marginLeft: icon ? 0 : 24 }}>
-        <div
-          style={{
-            color: "#555",
-            fontSize: "0.65rem",
-            textTransform: "uppercase",
-            letterSpacing: 1,
-            marginBottom: 2,
-          }}
-        >
-          {label}
-        </div>
-        {link ? (
-          <span
-            onClick={link}
-            style={{
-              color: "#e50914",
-              fontWeight: 600,
-              fontSize: "0.85rem",
-              cursor: "pointer",
-            }}
-          >
-            {value}
-          </span>
-        ) : pill ? (
-          <span
-            style={{
-              background: "rgba(229,9,20,0.15)",
-              border: "1px solid rgba(229,9,20,0.3)",
-              color: "#e50914",
-              fontSize: "0.75rem",
-              padding: "2px 8px",
-              borderRadius: 4,
-              fontWeight: 700,
-            }}
-          >
-            {value}
-          </span>
-        ) : (
-          <div
-            style={{
-              color: "#ddd",
-              fontSize: "0.85rem",
-              wordBreak: "break-word",
-            }}
-          >
-            {value}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-export function CastCard({ cast, onClick }) {
-  const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(cast.name)}&background=1a1a1a&color=e50914&size=185&bold=true`;
-  return (
-    <div
-      onClick={onClick}
-      style={{
-        flexShrink: 0,
-        width: 110,
-        cursor: "pointer",
-        transition: "transform 0.2s",
-      }}
-      onMouseEnter={(e) =>
-        (e.currentTarget.style.transform = "translateY(-4px)")
-      }
-      onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
-    >
-      <div
-        style={{
-          borderRadius: 10,
-          overflow: "hidden",
-          border: "2px solid #1f1f1f",
-          marginBottom: 7,
-          background: "#1a1a1a",
-        }}
-      >
-        <img
-          src={cast.profileUrl || fallback}
-          alt={cast.name}
-          onError={(e) => {
-            e.target.src = fallback;
-          }}
-          style={{
-            width: "100%",
-            aspectRatio: "2/3",
-            objectFit: "cover",
-            display: "block",
-          }}
-        />
-      </div>
-      <div
-        style={{
-          color: "#fff",
-          fontSize: "0.78rem",
-          fontWeight: 600,
-          lineHeight: 1.3,
-          marginBottom: 2,
-        }}
-      >
-        {cast.name}
-      </div>
-      {cast.role && (
-        <div style={{ color: "#666", fontSize: "0.7rem", lineHeight: 1.3 }}>
-          {cast.role}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function ProviderChip({ provider }) {
-  return (
-    <Tooltip title={provider.name}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 7,
-          background: "#1a1a1a",
-          border: "1px solid #252525",
-          borderRadius: 8,
-          padding: "6px 10px",
-          cursor: "default",
-        }}
-      >
-        {provider.logoUrl ? (
-          <img
-            src={provider.logoUrl}
-            alt={provider.name}
-            style={{
-              width: 24,
-              height: 24,
-              borderRadius: 6,
-              objectFit: "cover",
-            }}
-            onError={(e) => (e.target.style.display = "none")}
-          />
-        ) : (
-          <DesktopOutlined style={{ color: "#555", fontSize: 16 }} />
-        )}
-        <span
-          style={{
-            color: "#ccc",
-            fontSize: "0.78rem",
-            fontWeight: 500,
-            whiteSpace: "nowrap",
-          }}
-        >
-          {provider.name}
-        </span>
-      </div>
-    </Tooltip>
-  );
-}

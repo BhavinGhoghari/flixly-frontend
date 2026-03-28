@@ -181,7 +181,11 @@ export default function UserLayout() {
                       }}
                     >
                       <img
-                        src={item.posterUrl}
+                        src={
+                          item.posterUrl
+                            ? item.posterUrl.replace("/w500", "/w92")
+                            : ""
+                        }
                         alt={item.title}
                         style={{
                           width: 36,

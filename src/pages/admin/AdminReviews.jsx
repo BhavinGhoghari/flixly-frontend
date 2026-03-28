@@ -102,13 +102,15 @@ export default function AdminReviews() {
 
   return (
     <div>
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem', color: '#fff', letterSpacing: 3, marginBottom: 4 }}>REVIEWS</h1>
-        <p style={{ color: '#555', fontSize: '0.85rem' }}>{reviews.length} total reviews from users</p>
+      <div style={{ marginBottom: 24, display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:12 }}>
+        <div>
+          <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem', color: '#fff', letterSpacing: 3, marginBottom: 0 }}>REVIEWS</h1>
+          <p style={{ color: '#555', fontSize: '0.85rem' }}>{reviews.length} total reviews</p>
+        </div>
       </div>
 
       <div style={{ marginBottom: 16 }}>
-        <Input.Search placeholder="Search by user or movie..." value={search} onChange={e => setSearch(e.target.value)} style={{ width: 300 }} allowClear />
+        <Input.Search placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} style={{ width: '100%', maxWidth:300 }} allowClear />
       </div>
 
       <div style={{ background: '#111', border: '1px solid #1f1f1f', borderRadius: 12, overflow: 'hidden' }}>
@@ -118,7 +120,7 @@ export default function AdminReviews() {
           rowKey="_id"
           loading={loading}
           pagination={{ pageSize: 15, showSizeChanger: false }}
-          scroll={{ x: 900 }}
+          scroll={{ x: 'max-content' }}
         />
       </div>
     </div>

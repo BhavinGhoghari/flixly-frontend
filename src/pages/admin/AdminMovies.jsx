@@ -186,8 +186,8 @@ export default function AdminMovies() {
   return (
     <div>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:24, flexWrap:'wrap', gap:12 }}>
-        <div>
-          <h1 style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'2rem', color:'#fff', letterSpacing:3, marginBottom:4 }}>MOVIES & SERIES</h1>
+        <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
+          <h1 style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'2rem', color:'#fff', letterSpacing:3, marginBottom:0 }}>MOVIES & SERIES</h1>
           <p style={{ color:'#555', fontSize:'0.85rem' }}>{movies.length} titles in library</p>
         </div>
         <div style={{ display:'flex', gap:10 }}>
@@ -220,7 +220,7 @@ export default function AdminMovies() {
           </div>
           <div style={{ background:'#111', border:'1px solid #1f1f1f', borderRadius:12, overflow:'hidden' }}>
             <Table dataSource={filteredLib} columns={libCols} rowKey="_id" loading={libLoading}
-              pagination={{ pageSize:15, showSizeChanger:false }} scroll={{ x:700 }} />
+              pagination={{ pageSize:15, showSizeChanger:false }} scroll={{ x: 'max-content' }} />
           </div>
         </>
       )}
@@ -230,9 +230,9 @@ export default function AdminMovies() {
         <div>
           {/* Search */}
           <div style={{ marginBottom:16 }}>
-            <Input className="search-input-responsive" prefix={<SearchOutlined style={{ color:'#555' }} />} placeholder="Search TMDB for any movie or series..."
+             <Input className="admin-search-input" prefix={<SearchOutlined style={{ color:'#555' }} />} placeholder="Search TMDB..."
               value={tmdbSearch} onChange={e => setTmdbSearch(e.target.value)} allowClear size="large"
-              style={{ width:400, background:'#1a1a1a', border:'1px solid #333' }} />
+              style={{ width:'100%', maxWidth:400, background:'#1a1a1a', border:'1px solid #333' }} />
           </div>
 
           {!tmdbSearch && (
@@ -339,20 +339,20 @@ export default function AdminMovies() {
         styles={{ content:{ background:'#1a1a1a', border:'1px solid #2a2a2a' }, header:{ background:'#1a1a1a', borderBottom:'1px solid #2a2a2a' } }}
         destroyOnClose>
         <Form form={form} layout="vertical" onFinish={handleSubmit} style={{ marginTop:20 }}>
-          <div className="admin-form-grid" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
+          <div className="admin-form-grid" style={{ display:'grid', gap:16 }}>
             <Form.Item name="title" label="Title" rules={[{ required:true }]}><Input /></Form.Item>
             <Form.Item name="type" label="Type" rules={[{ required:true }]}>
               <Select><Select.Option value="movie">Movie</Select.Option><Select.Option value="series">Series</Select.Option></Select>
             </Form.Item>
           </div>
           <Form.Item name="description" label="Description" rules={[{ required:true }]}><TextArea rows={3} /></Form.Item>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
+          <div className="admin-form-grid" style={{ display:'grid', gap:16 }}>
             <Form.Item name="genre" label="Genres">
               <Select mode="multiple">{GENRES.map(g => <Select.Option key={g} value={g}>{g}</Select.Option>)}</Select>
             </Form.Item>
             <Form.Item name="director" label="Director"><Input /></Form.Item>
           </div>
-          <div className="admin-form-grid" style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:16 }}>
+          <div className="admin-form-grid" style={{ display:'grid', gap:16 }}>
             <Form.Item name="releaseYear" label="Year"><InputNumber style={{ width:'100%' }} min={1900} max={2030} /></Form.Item>
             <Form.Item name="duration" label="Duration"><Input placeholder="2h 10m" /></Form.Item>
             <Form.Item name="rating" label="Rating"><InputNumber style={{ width:'100%' }} min={0} max={10} step={0.1} /></Form.Item>
@@ -361,7 +361,7 @@ export default function AdminMovies() {
           <Form.Item name="backdropUrl" label="Backdrop URL"><Input /></Form.Item>
           <Form.Item name="trailerUrl" label="Trailer URL (YouTube)"><Input /></Form.Item>
           <Form.Item name="cast" label="Cast (Name:Role, one per line)"><TextArea rows={3} /></Form.Item>
-          <div className="admin-form-grid" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
+          <div className="admin-form-grid" style={{ display:'grid', gap:16 }}>
             <Form.Item name="status" label="Status">
               <Select><Select.Option value="active">Active</Select.Option><Select.Option value="inactive">Inactive</Select.Option></Select>
             </Form.Item>

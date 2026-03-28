@@ -1,6 +1,6 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { StarFilled } from '@ant-design/icons';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { StarFilled } from "@ant-design/icons";
 
 export default function MovieCard({ movie }) {
   const navigate = useNavigate();
@@ -10,9 +10,15 @@ export default function MovieCard({ movie }) {
   return (
     <div className="movie-card" onClick={() => navigate(`/movie/${movie._id}`)}>
       <img
-        src={movie.posterUrl || fallbackPoster}
+        src={
+          movie.posterUrl
+            ? movie.posterUrl.replace("/w500", "/w342")
+            : fallbackPoster
+        }
         alt={movie.title}
-        onError={e => { e.target.src = fallbackPoster; }}
+        onError={(e) => {
+          e.target.src = fallbackPoster;
+        }}
         loading="lazy"
       />
       <div className="movie-card-badges">

@@ -381,8 +381,12 @@ body {
   .hero-content {
     max-width: 100%;
   }
+  .hero-title {
+    font-size: 3.5rem;
+    margin-bottom: 12px;
+  }
   .hero-desc {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     margin-bottom: 20px;
     line-clamp: 3;
     -webkit-line-clamp: 3;
@@ -393,11 +397,24 @@ body {
 }
 @media (max-width: 480px) {
   .hero-section {
-    min-height: 50vh;
+    min-height: 400px;
     padding: 30px 16px;
+    align-items: flex-end;
+    padding-bottom: 60px;
   }
   .hero-title {
+    font-size: 2.2rem;
     letter-spacing: 1px;
+  }
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px !important;
+  }
+  .hero-buttons button {
+    width: 100%;
+    height: 44px;
+    justify-content: center;
   }
 }
 
@@ -433,10 +450,15 @@ body {
   align-items: center;
   gap: 16px;
   transition: transform 0.2s;
+  height: 100%;
+  min-height: 120px;
 }
+
 .admin-stat-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  border-color: #e50914;
 }
+
 .admin-stat-icon {
   width: 56px;
   height: 56px;
@@ -445,18 +467,22 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
+  flex-shrink: 0;
 }
+
 .admin-stat-value {
-  font-family: "Bebas Neue", sans-serif;
-  font-size: 2.2rem;
-  line-height: 1;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 800;
   color: #fff;
+  line-height: 1.2;
 }
+
 .admin-stat-label {
+  font-size: clamp(0.65rem, 1.5vw, 0.85rem);
   color: #888;
-  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-weight: 600;
 }
 
 /* Navbar */
@@ -515,7 +541,15 @@ body {
   background: #e50914;
   border-radius: 1px;
 }
-@media (max-width: 640px) {
+/* Tablet & Small Laptop Overrides (Admin) */
+@media (max-width: 1200px) and (min-width: 769px) {
+  .admin-stat-card {
+    padding: 16px !important;
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 768px) {
   .flixly-nav {
     padding: 0 16px;
     justify-content: space-between;
@@ -523,7 +557,7 @@ body {
   }
   .nav-links {
     display: none;
-  } /* Hide regular links, we'll use a mobile menu */
+  }
   .mobile-menu-btn {
     display: flex !important;
     align-items: center;
@@ -548,9 +582,15 @@ body {
     width: 100% !important;
     max-width: 400px;
   }
+
+  /* Admin Responsive Fixes */
   .admin-form-grid {
     grid-template-columns: 1fr !important;
-    gap: 8px !important;
+    gap: 12px !important;
+  }
+  .admin-stat-card {
+    padding: 16px !important;
+    gap: 12px !important;
   }
 }
 
