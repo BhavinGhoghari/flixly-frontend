@@ -7,14 +7,16 @@ export default function TMDBMovieCard({ movie, onClick }) {
   return (
     <div className="movie-card" onClick={onClick}>
       <img
-        src={
-          movie.posterUrl ? movie.posterUrl.replace("/w500", "/w342") : fallback
-        }
+        src={movie.posterUrl ? movie.posterUrl.replace("/w500", "/w342") : fallback}
+        srcSet={movie.posterUrl ? `${movie.posterUrl.replace("/w500", "/w185")} 185w, ${movie.posterUrl.replace("/w500", "/w342")} 342w, ${movie.posterUrl.replace("/w500", "/w500")} 500w` : ""}
+        sizes="(max-width: 600px) 120px, 170px"
         alt={movie.title}
         onError={(e) => {
           e.target.src = fallback;
+          e.target.srcset = "";
         }}
         loading="lazy"
+        decoding="async"
       />
       <div className="movie-card-badges">
         <span className="badge-type">{movie.type}</span>

@@ -22,28 +22,14 @@ import SkeletonSection from "../../components/SkeletonSection";
 export default function HomePage() {
   const navigate = useNavigate();
   const [trending, setTrending] = useState([]);
-  const [popular, setPopular] = useState([]);
-  const [upcoming, setUpcoming] = useState([]);
-  const [popularSeries, setPopularSeries] = useState([]);
-  const [actionMovies, setActionMovies] = useState([]);
-  const [comedyMovies, setComedyMovies] = useState([]);
-  const [horrorMovies, setHorrorMovies] = useState([]);
-  const [animationMovies, setAnimationMovies] = useState([]);
-  const [scifiMovies, setScifiMovies] = useState([]);
-  const [docs, setDocs] = useState([]);
   const [featured, setFeatured] = useState(null);
   const [trailerOpen, setTrailerOpen] = useState(false);
   const [trailerUrl, setTrailerUrl] = useState("");
   const [loadingHero, setLoadingHero] = useState(true);
-  const [loadingSections, setLoadingSections] = useState(true);
+  const [loadingInitial, setLoadingInitial] = useState(true);
 
   useEffect(() => {
-    // Priority 1: Above-the-fold content
     fetchInitial();
-    
-    // Priority 2: Non-essential sections (delay slightly to let browser prioritize initial render)
-    const t = setTimeout(fetchOthers, 800);
-    return () => clearTimeout(t);
   }, []);
 
   const fetchInitial = async () => {
@@ -52,58 +38,13 @@ export default function HomePage() {
       const trendRes = await tmdb.getTrending("week");
       const tr = trendRes.data.results || [];
       setTrending(tr);
-      // Pick a featured item that has a backdrop
       const withBackdrop = tr.find(item => item.backdropUrl) || tr[0];
       setFeatured(withBackdrop || null);
     } catch (err) {
       console.error(err);
     } finally {
       setLoadingHero(false);
-    }
-  };
-
-  const fetchOthers = async () => {
-    try {
-      // Fetch in smaller chunks or use Promise.all for the rest
-      const [
-        popRes,
-        upRes,
-        popSerRes,
-      ] = await Promise.all([
-        tmdb.getPopularMovies(),
-        tmdb.getUpcoming(),
-        tmdb.getPopularSeries(),
-      ]);
-      setPopular(popRes.data.results || []);
-      setUpcoming(upRes.data.results || []);
-      setPopularSeries(popSerRes.data.results || []);
-
-      // Batch the remaining genres to avoid overwhelming the connection
-      const [
-        actionRes,
-        comedyRes,
-        horrorRes,
-        animRes,
-        scifiRes,
-        docRes,
-      ] = await Promise.all([
-        tmdb.getMoviesByGenre(28),
-        tmdb.getMoviesByGenre(35),
-        tmdb.getMoviesByGenre(27),
-        tmdb.getMoviesByGenre(16),
-        tmdb.getMoviesByGenre(878),
-        tmdb.getMoviesByGenre(99),
-      ]);
-      setActionMovies(actionRes.data.results || []);
-      setComedyMovies(comedyRes.data.results || []);
-      setHorrorMovies(horrorRes.data.results || []);
-      setAnimationMovies(animRes.data.results || []);
-      setScifiMovies(scifiRes.data.results || []);
-      setDocs(docRes.data.results || []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoadingSections(false);
+      setLoadingInitial(false);
     }
   };
 
@@ -130,11 +71,12 @@ export default function HomePage() {
       ) : (
         featured && (
           <div className="hero-section">
-            <div
+            <img
               className="hero-bg"
-              style={{
-                backgroundImage: `url(${featured.backdropUrl || featured.posterUrl})`,
-              }}
+              src={featured.backdropUrl || featured.posterUrl}
+              alt=""
+              fetchpriority="high"
+              decoding="async"
             />
             <div className="hero-gradient" />
             <div className="hero-content">
@@ -204,7 +146,7 @@ export default function HomePage() {
           zIndex: 5,
         }}
       >
-        {loadingSections ? (
+        {loadingInitial ? (
           <>
             <SkeletonSection title="Trending This Week" />
             <SkeletonSection title="Upcoming Movies" />
@@ -221,14 +163,14 @@ export default function HomePage() {
 
             <MovieSection
               title="Upcoming Movies"
-              items={upcoming}
+              fetchFn={tmdb.getUpcoming}
               navigate={navigate}
               icon={<ClockCircleOutlined style={{ color: "#e50914" }} />}
             />
 
             <MovieSection
               title="Action Hits"
-              items={actionMovies}
+              fetchFn={() => tmdb.getMoviesByGenre(28)}
               navigate={navigate}
               viewAll="/movies?genre=28"
               viewAllLabel="Explore Action"
@@ -236,7 +178,7 @@ export default function HomePage() {
 
             <MovieSection
               title="Binge-worthy Series"
-              items={popularSeries}
+              fetchFn={tmdb.getPopularSeries}
               navigate={navigate}
               icon={<ThunderboltFilled style={{ color: "#e50914" }} />}
               viewAll="/series"
@@ -245,7 +187,7 @@ export default function HomePage() {
 
             <MovieSection
               title="Comedy Special"
-              items={comedyMovies}
+              fetchFn={() => tmdb.getMoviesByGenre(35)}
               navigate={navigate}
               viewAll="/movies?genre=35"
               viewAllLabel="Explore Comedy"
@@ -253,14 +195,14 @@ export default function HomePage() {
 
             <MovieSection
               title="Animation Favorites"
-              items={animationMovies}
+              fetchFn={() => tmdb.getMoviesByGenre(16)}
               navigate={navigate}
               icon={<RiseOutlined style={{ color: "#e50914" }} />}
             />
 
             <MovieSection
               title="Popular Movies"
-              items={popular}
+              fetchFn={tmdb.getPopularMovies}
               navigate={navigate}
               viewAll="/movies"
               viewAllLabel="View All"
@@ -268,16 +210,20 @@ export default function HomePage() {
 
             <MovieSection
               title="Sci-Fi & Fantasy"
-              items={scifiMovies}
+              fetchFn={() => tmdb.getMoviesByGenre(878)}
               navigate={navigate}
               icon={<ThunderboltFilled style={{ color: "#1890ff" }} />}
             />
 
-            <MovieSection title="Documentaries" items={docs} navigate={navigate} />
+            <MovieSection
+              title="Documentaries"
+              fetchFn={() => tmdb.getMoviesByGenre(99)}
+              navigate={navigate}
+            />
 
             <MovieSection
               title="Horror Zone"
-              items={horrorMovies}
+              fetchFn={() => tmdb.getMoviesByGenre(27)}
               navigate={navigate}
               icon={<FireFilled style={{ color: "#ff4d4f" }} />}
             />

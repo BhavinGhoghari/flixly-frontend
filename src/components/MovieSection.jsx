@@ -1,13 +1,56 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Button } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import TMDBMovieCard from "./TMDBMovieCard";
+import SkeletonSection from "./SkeletonSection";
 
 /**
- * A horizontal scrolling carousel section for movie items.
+ * A horizontal scrolling carousel section that lazy-fetches data when in view.
  */
-const MovieSection = ({ title, items, navigate, viewAll, viewAllLabel, icon }) => {
+const MovieSection = ({ title, fetchFn, items: initialItems, navigate, viewAll, viewAllLabel, icon }) => {
+  const [items, setItems] = useState(initialItems || []);
+  const [loading, setLoading] = useState(!initialItems);
+  const [hasFetched, setHasFetched] = useState(!!initialItems);
   const scrollRef = useRef(null);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    if (initialItems) {
+      setItems(initialItems);
+      setLoading(false);
+      setHasFetched(true);
+    }
+  }, [initialItems]);
+
+  useEffect(() => {
+    if (hasFetched || !fetchFn) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadData();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1, rootMargin: "200px" } // Start loading 200px before it enters
+    );
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, [fetchFn, hasFetched]);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const res = await fetchFn();
+      setItems(res.data.results || []);
+    } catch (err) {
+      console.error(`Error loading section ${title}:`, err);
+    } finally {
+      setLoading(false);
+      setHasFetched(true);
+    }
+  };
 
   const scroll = (direction) => {
     if (scrollRef.current) {
@@ -20,10 +63,15 @@ const MovieSection = ({ title, items, navigate, viewAll, viewAllLabel, icon }) =
     }
   };
 
-  if (!items || items.length === 0) return null;
+  if (loading && !hasFetched) {
+    return <div ref={sectionRef}><SkeletonSection title={title} /></div>;
+  }
+
+  if (hasFetched && items.length === 0) return null;
 
   return (
     <section
+      ref={sectionRef}
       className="section-container"
       style={{ marginBottom: 52, position: "relative" }}
     >
