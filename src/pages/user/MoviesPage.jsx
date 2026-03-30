@@ -145,26 +145,7 @@ export default function MoviesPage() {
         >
           MOVIES
         </h1>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginBottom: 6,
-          }}
-        >
-          <div
-            style={{
-              width: 4,
-              height: 4,
-              borderRadius: "50%",
-              background: "#e50914",
-            }}
-          />
-          <span style={{ color: "#555", fontSize: "0.8rem", letterSpacing: 2 }}>
-            POWERED BY TMDB
-          </span>
-        </div>
+
         <div
           style={{
             width: 60,

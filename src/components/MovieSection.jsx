@@ -114,7 +114,7 @@ const MovieSection = ({ title, fetchFn, items: initialItems, navigate, viewAll, 
             <TMDBMovieCard
               key={m.tmdbId}
               movie={m}
-              onClick={() => navigate(`/movie/${m.tmdbId}?type=${m.type}`)}
+              onClick={() => navigate(m.type === 'series' ? `/series/${m.tmdbId}` : `/movie/${m.tmdbId}`)}
             />
           ))}
         </div>

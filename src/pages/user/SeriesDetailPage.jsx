@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Button, Tag, Spin, Divider, Tooltip } from "antd";
 import {
   PlayCircleOutlined,
@@ -49,11 +49,10 @@ const GENRE_COLORS = {
 
 const fmtMoney = (n) => (n > 0 ? `$${(n / 1e6).toFixed(1)}M` : "N/A");
 
-export default function MovieDetailPage() {
+export default function SeriesDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const type = searchParams.get("type") || "movie";
+  const type = "series";
 
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -62,13 +61,12 @@ export default function MovieDetailPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchMovie();
-  }, [id, type]);
+  }, [id]);
 
   const fetchMovie = async () => {
     setLoading(true);
     try {
-      const fn = type === "series" ? tmdb.getSeriesDetail : tmdb.getMovieDetail;
-      const res = await fn(id);
+      const res = await tmdb.getSeriesDetail(id);
       setMovie(res.data);
     } catch {
       navigate("/");
@@ -151,8 +149,8 @@ export default function MovieDetailPage() {
           className="back-button"
           style={{
             position: "absolute",
-            top: window.innerWidth < 640 ? 75 : 90,
-            left: window.innerWidth < 640 ? 16 : 28,
+            top: 90,
+            left: 28,
             background: "rgba(0,0,0,0.65)",
             border: "1px solid #333",
             color: "#fff",
@@ -179,7 +177,6 @@ export default function MovieDetailPage() {
             alignItems: "flex-end",
           }}
         >
-          {/* Poster */}
           <div style={{ flexShrink: 0 }} className="detail-poster">
             <img
               src={
@@ -201,15 +198,9 @@ export default function MovieDetailPage() {
             />
           </div>
 
-          {/* Info block */}
           <div
             className="detail-info"
-            style={{
-              flex: 1,
-              minWidth: 260,
-              paddingBottom: 8,
-              paddingTop: window.innerWidth < 900 ? 0 : 60,
-            }}
+            style={{ flex: 1, minWidth: 260, paddingBottom: 8, paddingTop: 60 }}
           >
             <div
               className="detail-info-badges"
@@ -282,7 +273,6 @@ export default function MovieDetailPage() {
               </div>
             )}
 
-            {/* Genres */}
             <div
               style={{
                 display: "flex",
@@ -302,7 +292,6 @@ export default function MovieDetailPage() {
               ))}
             </div>
 
-            {/* Rating */}
             <div
               className="detail-info-rating"
               style={{
@@ -394,7 +383,6 @@ export default function MovieDetailPage() {
               )}
             </div>
 
-            {/* Action buttons */}
             <div
               className="detail-info-actions"
               style={{ display: "flex", gap: 10, flexWrap: "wrap" }}
@@ -430,9 +418,7 @@ export default function MovieDetailPage() {
             alignItems: "start",
           }}
         >
-          {/* LEFT COLUMN */}
           <div style={{ minWidth: 0 }}>
-            {/* Synopsis */}
             <DetailSection title="Synopsis">
               <p
                 style={{
@@ -446,7 +432,6 @@ export default function MovieDetailPage() {
               </p>
             </DetailSection>
 
-            {/* Cast strip */}
             {movie.cast?.length > 0 && (
               <DetailSection
                 title="Cast"
@@ -482,7 +467,6 @@ export default function MovieDetailPage() {
                       onClick={() => navigate(`/actor/${c.id}`)}
                     />
                   ))}
-                  {/* "See All" card */}
                   {movie.allCast?.length > 12 && (
                     <div
                       onClick={() => navigate(`/cast/${type}/${id}`)}
@@ -521,7 +505,6 @@ export default function MovieDetailPage() {
               </DetailSection>
             )}
 
-            {/* Keywords */}
             {movie.keywords?.length > 0 && (
               <DetailSection title="Keywords">
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
@@ -543,7 +526,6 @@ export default function MovieDetailPage() {
               </DetailSection>
             )}
 
-            {/* Watch Providers */}
             {hasProviders && (
               <DetailSection
                 title={
@@ -618,7 +600,6 @@ export default function MovieDetailPage() {
 
             <Divider style={{ borderColor: "#1f1f1f", margin: "32px 0" }} />
 
-            {/* Reviews */}
             <DetailSection
               title={
                 <>
@@ -627,11 +608,10 @@ export default function MovieDetailPage() {
                 </>
               }
             >
-              <ReviewSection movieId={`tmdb_${type}_${id}`} />
+              <ReviewSection movieId={`tmdb_series_${id}`} />
             </DetailSection>
           </div>
 
-          {/* RIGHT SIDEBAR — full details panel */}
           <div style={{ position: "sticky", top: 85 }}>
             <div
               style={{
@@ -641,7 +621,6 @@ export default function MovieDetailPage() {
                 overflow: "hidden",
               }}
             >
-              {/* Header */}
               <div
                 style={{
                   background: "linear-gradient(135deg,#1a0a0a,#1a1a1a)",
@@ -663,21 +642,13 @@ export default function MovieDetailPage() {
               </div>
 
               <div style={{ padding: "0" }}>
-                {/* Grouped detail rows */}
                 <DetailInfoGroup>
                   <DetailInfoRow
                     icon={<CalendarOutlined />}
-                    label="Release Year"
-                    value={movie.releaseYear}
+                    label="First Aired"
+                    value={movie.releaseDate}
                   />
-                  {movie.releaseDate && (
-                    <DetailInfoRow
-                      icon={<CalendarOutlined />}
-                      label="Release Date"
-                      value={movie.releaseDate}
-                    />
-                  )}
-                  {movie.type === "series" && movie.lastAirDate && (
+                  {movie.lastAirDate && (
                     <DetailInfoRow
                       icon={<CalendarOutlined />}
                       label="Last Aired"
@@ -687,13 +658,6 @@ export default function MovieDetailPage() {
                 </DetailInfoGroup>
 
                 <DetailInfoGroup>
-                  {movie.duration && (
-                    <DetailInfoRow
-                      icon={<ClockCircleOutlined />}
-                      label="Duration"
-                      value={movie.duration}
-                    />
-                  )}
                   {movie.episodeRuntime && (
                     <DetailInfoRow
                       icon={<ClockCircleOutlined />}
@@ -701,14 +665,14 @@ export default function MovieDetailPage() {
                       value={movie.episodeRuntime}
                     />
                   )}
-                  {movie.type === "series" && movie.totalSeasons && (
+                  {movie.totalSeasons && (
                     <DetailInfoRow
                       icon={null}
                       label="Seasons"
                       value={`${movie.totalSeasons} Season${movie.totalSeasons > 1 ? "s" : ""}`}
                     />
                   )}
-                  {movie.type === "series" && movie.totalEpisodes && (
+                  {movie.totalEpisodes && (
                     <DetailInfoRow
                       icon={null}
                       label="Episodes"
@@ -735,19 +699,12 @@ export default function MovieDetailPage() {
                       value={movie.createdBy.map((c) => c.name).join(", ")}
                     />
                   )}
-                  {movie.writers?.length > 0 && (
-                    <DetailInfoRow
-                      icon={null}
-                      label="Writers"
-                      value={movie.writers.map((w) => w.name).join(", ")}
-                    />
-                  )}
                 </DetailInfoGroup>
 
                 <DetailInfoGroup>
                   <DetailInfoRow
                     icon={<GlobalOutlined />}
-                    label="Original Language"
+                    label="Language"
                     value={movie.language}
                   />
                   {movie.country && (
@@ -755,13 +712,6 @@ export default function MovieDetailPage() {
                       icon={null}
                       label="Country"
                       value={movie.country}
-                    />
-                  )}
-                  {movie.spokenLanguages?.length > 0 && (
-                    <DetailInfoRow
-                      icon={<TranslationOutlined />}
-                      label="Dubbed / Audio"
-                      value={movie.spokenLanguages.slice(0, 5).join(", ")}
                     />
                   )}
                 </DetailInfoGroup>
@@ -773,23 +723,15 @@ export default function MovieDetailPage() {
                     value={movie.ageRating}
                     pill
                   />
-                  {movie.type === "series" && movie.airStatus && (
+                  {movie.airStatus && (
                     <DetailInfoRow
                       icon={null}
                       label="Air Status"
                       value={movie.airStatus}
                     />
                   )}
-                  {movie.status && movie.type === "movie" && (
-                    <DetailInfoRow
-                      icon={null}
-                      label="Status"
-                      value={movie.status}
-                    />
-                  )}
                 </DetailInfoGroup>
 
-                {/* Networks (series) */}
                 {movie.networks?.length > 0 && (
                   <DetailInfoGroup>
                     <div style={{ padding: "12px 16px" }}>
@@ -853,64 +795,6 @@ export default function MovieDetailPage() {
                   </DetailInfoGroup>
                 )}
 
-                {/* Production companies */}
-                {movie.productionCompanies?.length > 0 && (
-                  <DetailInfoGroup>
-                    <div style={{ padding: "12px 16px" }}>
-                      <div
-                        style={{
-                          color: "#555",
-                          fontSize: "0.68rem",
-                          textTransform: "uppercase",
-                          letterSpacing: 1,
-                          marginBottom: 8,
-                        }}
-                      >
-                        Production
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: 6,
-                        }}
-                      >
-                        {movie.productionCompanies.map((c) => (
-                          <div
-                            key={c.name}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 8,
-                            }}
-                          >
-                            {c.logoUrl && (
-                              <img
-                                src={c.logoUrl}
-                                alt={c.name}
-                                style={{
-                                  height: 18,
-                                  objectFit: "contain",
-                                  filter: "brightness(2)",
-                                  maxWidth: 60,
-                                }}
-                                onError={(e) =>
-                                  (e.target.style.display = "none")
-                                }
-                              />
-                            )}
-                            <span
-                              style={{ color: "#888", fontSize: "0.78rem" }}
-                            >
-                              {c.name}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </DetailInfoGroup>
-                )}
-
                 {/* Budget / Revenue */}
                 {(movie.budget > 0 || movie.revenue > 0) && (
                   <DetailInfoGroup>
@@ -930,42 +814,34 @@ export default function MovieDetailPage() {
                     )}
                   </DetailInfoGroup>
                 )}
-
-                {/* IMDB link */}
-                {movie.imdbId && (
-                  <div
-                    style={{
-                      padding: "12px 16px",
-                      borderTop: "1px solid #1a1a1a",
-                    }}
-                  >
-                    <a
-                      href={`https://www.imdb.com/title/${movie.imdbId}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{
-                        color: "#f5c518",
-                        fontSize: "0.8rem",
-                        fontWeight: 700,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 5,
-                      }}
-                    >
-                      <StarFilled style={{ fontSize: 12 }} /> View on IMDb
-                    </a>
-                  </div>
-                )}
               </div>
             </div>
+
+            {movie.imdbId && (
+              <div style={{ padding: "12px 16px", marginTop: 12 }}>
+                <a
+                  href={`https://www.imdb.com/title/${movie.imdbId}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    color: "#f5c518",
+                    fontSize: "0.8rem",
+                    fontWeight: 700,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 5,
+                  }}
+                >
+                  <StarFilled style={{ fontSize: 12 }} /> View on IMDb
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {movie.recommendations?.length > 0 && (
-        <div
-          style={{ maxWidth: 1280, margin: "40px auto 0", padding: "0 28px" }}
-        >
+        <div style={{ maxWidth: 1280, margin: "40px auto 0", padding: "0 28px" }}>
           <MovieSection
             title="More Like This"
             items={movie.recommendations}

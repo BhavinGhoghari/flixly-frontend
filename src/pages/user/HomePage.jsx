@@ -38,7 +38,7 @@ export default function HomePage() {
       const trendRes = await tmdb.getTrending("week");
       const tr = trendRes.data.results || [];
       setTrending(tr);
-      const withBackdrop = tr.find(item => item.backdropUrl) || tr[0];
+      const withBackdrop = tr.find((item) => item.backdropUrl) || tr[0];
       setFeatured(withBackdrop || null);
     } catch (err) {
       console.error(err);
@@ -113,7 +113,10 @@ export default function HomePage() {
                 )}
               </div>
               <p className="hero-desc">{featured.description}</p>
-              <div className="hero-buttons" style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+              <div
+                className="hero-buttons"
+                style={{ display: "flex", gap: 16, flexWrap: "wrap" }}
+              >
                 <Button
                   className="hero-btn-primary"
                   icon={<PlayCircleOutlined />}
@@ -125,7 +128,11 @@ export default function HomePage() {
                   className="hero-btn-secondary"
                   icon={<InfoCircleOutlined />}
                   onClick={() =>
-                    navigate(`/movie/${featured.tmdbId}?type=${featured.type}`)
+                    navigate(
+                      featured.type === "series"
+                        ? `/series/${featured.tmdbId}`
+                        : `/movie/${featured.tmdbId}`,
+                    )
                   }
                 >
                   MORE INFO
@@ -240,4 +247,3 @@ export default function HomePage() {
     </div>
   );
 }
-

@@ -69,6 +69,11 @@ export default function UserLayout() {
       label: <span style={{ color: "#aaa" }}>{user?.name}</span>,
       disabled: true,
     },
+    {
+      key: "settings",
+      label: "Account Settings",
+      onClick: () => navigate("/settings"),
+    },
     { type: "divider" },
     {
       key: "logout",

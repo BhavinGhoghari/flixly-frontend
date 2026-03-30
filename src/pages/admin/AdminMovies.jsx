@@ -10,7 +10,6 @@ const GENRES = ['Action','Comedy','Drama','Horror','Thriller','Romance','Sci-Fi'
 export default function AdminMovies() {
   const [activeMainTab, setActiveMainTab] = useState('library');
 
-  // Local library
   const [movies, setMovies] = useState([]);
   const [libLoading, setLibLoading] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -20,7 +19,6 @@ export default function AdminMovies() {
   const [libType, setLibType] = useState('all');
   const [form] = Form.useForm();
 
-  // TMDB browser
   const [tmdbTab, setTmdbTab] = useState('popular_movies');
   const [tmdbMovies, setTmdbMovies] = useState([]);
   const [tmdbLoading, setTmdbLoading] = useState(false);
@@ -32,7 +30,6 @@ export default function AdminMovies() {
   const [importingIds, setImportingIds] = useState(new Set());
   const [importedIds, setImportedIds] = useState(new Set());
 
-  // Detail modal
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [detailData, setDetailData] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -110,7 +107,6 @@ export default function AdminMovies() {
     setDetailLoading(false);
   };
 
-  // Library CRUD
   const openAdd = () => {
     setEditing(null);
     form.resetFields();
@@ -141,7 +137,7 @@ export default function AdminMovies() {
   };
 
   const filteredLib = movies.filter(m => {
-    const mt = libType === 'all' || m.type === libType;
+    const mt = libType === 'all' || (m.type || '').toLowerCase() === libType.toLowerCase() || (m.type === 'tv' && libType === 'series');
     const ms = !libSearch || m.title.toLowerCase().includes(libSearch.toLowerCase());
     return mt && ms;
   });
@@ -207,7 +203,6 @@ export default function AdminMovies() {
         style={{ marginBottom:20 }}
       />
 
-      {/* ── LIBRARY TAB ── */}
       {activeMainTab === 'library' && (
         <>
           <div style={{ display:'flex', gap:12, marginBottom:16, flexWrap:'wrap' }}>
@@ -225,7 +220,6 @@ export default function AdminMovies() {
         </>
       )}
 
-      {/* ── TMDB BROWSER TAB ── */}
       {activeMainTab === 'tmdb' && (
         <div>
           {/* Search */}
@@ -284,7 +278,6 @@ export default function AdminMovies() {
         </div>
       )}
 
-      {/* ── DETAIL MODAL ── */}
       <Modal open={detailModalOpen} onCancel={() => setDetailModalOpen(false)} footer={null} width={700}
         style={{ maxWidth: '95vw' }}
         title={<span style={{ color:'#fff' }}>TMDB Details</span>}
@@ -332,7 +325,6 @@ export default function AdminMovies() {
         )}
       </Modal>
 
-      {/* ── EDIT/ADD MODAL ── */}
       <Modal open={editModalOpen} onCancel={() => setEditModalOpen(false)} title={<span style={{ color:'#fff' }}>{editing ? 'Edit Title' : 'Add New Title'}</span>}
         footer={null} width={800}
         style={{ maxWidth: '98vw' }}

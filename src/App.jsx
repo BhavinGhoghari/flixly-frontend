@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { ConfigProvider, theme } from "antd";
+import { ConfigProvider, theme, App as AntApp } from "antd";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
@@ -10,9 +10,11 @@ const HomePage = lazy(() => import("./pages/user/HomePage"));
 const MoviesPage = lazy(() => import("./pages/user/MoviesPage"));
 const SeriesPage = lazy(() => import("./pages/user/SeriesPage"));
 const MovieDetailPage = lazy(() => import("./pages/user/MovieDetailPage"));
+const SeriesDetailPage = lazy(() => import("./pages/user/SeriesDetailPage"));
 const AllCastPage = lazy(() => import("./pages/user/AllCastPage"));
 const ActorPage = lazy(() => import("./pages/user/ActorPage"));
 const UserLayout = lazy(() => import("./components/UserLayout"));
+const SettingsPage = lazy(() => import("./pages/user/SettingsPage"));
 
 // Admin pages
 const AdminLayout = lazy(() => import("./components/AdminLayout"));
@@ -73,9 +75,11 @@ function AppRoutes() {
           <Route index element={<HomePage />} />
           <Route path="movies" element={<MoviesPage />} />
           <Route path="series" element={<SeriesPage />} />
+          <Route path="series/:id" element={<SeriesDetailPage />} />
           <Route path="movie/:id" element={<MovieDetailPage />} />
           <Route path="cast/:mediaType/:id" element={<AllCastPage />} />
           <Route path="actor/:id" element={<ActorPage />} />
+          <Route path="settings" element={<SettingsPage />} />
         </Route>
 
         {/* Admin Routes */}
@@ -112,12 +116,14 @@ export default function App() {
         },
       }}
     >
-      <AuthProvider>
-        <BrowserRouter>
-          <AppRoutes />
-          <SpeedInsights />
-        </BrowserRouter>
-      </AuthProvider>
+      <AntApp>
+        <AuthProvider>
+          <BrowserRouter>
+            <AppRoutes />
+            <SpeedInsights />
+          </BrowserRouter>
+        </AuthProvider>
+      </AntApp>
     </ConfigProvider>
   );
 }
